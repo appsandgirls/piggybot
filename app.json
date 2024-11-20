@@ -32,8 +32,17 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "/assets/fonts/Nunito-Regular.tff"
+          ]
+        }
       ]
     ],
+    
     "experiments": {
       "typedRoutes": true
     }
