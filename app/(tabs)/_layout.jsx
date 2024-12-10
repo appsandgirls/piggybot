@@ -8,8 +8,8 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#4CAF50", 
-        tabBarInactiveTintColor: "#999", 
+        tabBarActiveTintColor: "#FFA500",
+        tabBarInactiveTintColor: "#999",
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
@@ -29,11 +29,31 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="goals"
         options={{
-          title: "Explore",
+          title: "Goals",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="search" size={24} color={color} />
+            <MaterialIcons name="flag" size={24} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="learn"
+        options={{
+          title: "Learn",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="school" size={24} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="account"
+        options={{
+          title: "Account",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="account-circle" size={24} color={color} />
           ),
         }}
       />

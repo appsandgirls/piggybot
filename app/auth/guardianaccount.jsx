@@ -1,16 +1,17 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-} from "react-native"
-import { useRouter } from "expo-router"
-
+  Alert,
+  ScrollView
+} from "react-native";
+import { useRouter } from "expo-router";
 
 export default function GuardianAccount() {
-      const router = useRouter()
+  const router = useRouter();
 
   const [guardianFormData, setGuardianFormData] = useState({
     name: "",
@@ -18,49 +19,49 @@ export default function GuardianAccount() {
     phone: "",
     relation: "",
     guardianPassword: "",
-    childName: "",
-    childPassword: "",
-    childAge: "",
-  })
-
+  });
 
   const [childFormData, setChildFormData] = useState({
     childName: "",
     childPassword: "",
     childAge: "",
-  })
-  const handleInputChange = (field, value) => {
-    setChildFormData({ ...childFormData, [field]: value })
-    setGuardianFormData({ ...guardianFormData, [field]: value })
-  }
+  });
+
+  const handleInputChange = (form, field, value) => {
+    if (form === "guardian") {
+      setGuardianFormData({ ...guardianFormData, [field]: value });
+    } else if (form === "child") {
+      setChildFormData({ ...childFormData, [field]: value });
+    }
+  };
 
   const handleSubmit = () => {
-    const requiredFields = [
-      "name",
-      /* "email",
-      "phone",
-      "relation",
-      "guardianPassword",
-      "childName",
-      "childPassword",
-      "childAge", */
-    ]
+    const requiredGuardianFields = ["name", "email", "phone", "relation", "guardianPassword"];
+    const requiredChildFields = ["childName", "childPassword", "childAge"];
 
-    for (const field of requiredFields) {
+    // Check Guardian Form
+    for (const field of requiredGuardianFields) {
       if (!guardianFormData[field]) {
-        alert(`Please fill the ${field} field.`)
-        return
+        Alert.alert("Validation Error", `Please fill the ${field} field in Guardian form.`);
+        return;
       }
     }
 
-    console.log("Child Form Data Submitted:", childFormData)
-    console.log("Guardian Form Data Submitted:", guardianFormData)
-    router.replace("/auth/profilesetup")
-  }
+    // Check Child Form
+    for (const field of requiredChildFields) {
+      if (!childFormData[field]) {
+        Alert.alert("Validation Error", `Please fill the ${field} field in Child form.`);
+        return;
+      }
+    }
 
+    console.log("Guardian Form Data Submitted:", guardianFormData);
+    console.log("Child Form Data Submitted:", childFormData);
+    router.replace("/auth/profilesetup");
+  };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Guardian Account</Text>
       <Text style={styles.subtitle}>
         For monitoring child activities and progress
@@ -72,22 +73,19 @@ export default function GuardianAccount() {
           { label: "Email", field: "email" },
           { label: "Phone", field: "phone" },
           { label: "Relation to Child", field: "relation" },
-          {
-            label: "Password for Guardian",
-            field: "guardianPassword",
-            secure: true,
-          },
+          { label: "Password for Guardian", field: "guardianPassword", secure: true },
         ].map(({ label, field, secure }) => (
           <TextInput
             key={field}
             style={styles.input}
             placeholder={label}
             secureTextEntry={secure}
-            onChangeText={(value) => handleInputChange(field, value)}
+            onChangeText={(value) => handleInputChange("guardian", field, value)}
             value={guardianFormData[field]}
           />
         ))}
       </View>
+
       <Text style={styles.title}>Child Account</Text>
       <Text style={styles.subtitle}>
         For monitoring child's activity and saving progress.
@@ -103,8 +101,9 @@ export default function GuardianAccount() {
             style={styles.input}
             placeholder={label}
             secureTextEntry={secure}
-            onChangeText={(value) => handleInputChange(field, value)}
-            value={guardianFormData[field]}
+            keyboardType={field === "childAge" ? "numeric" : "default"}
+            onChangeText={(value) => handleInputChange("child", field, value)}
+            value={childFormData[field]}
           />
         ))}
       </View>
@@ -112,15 +111,25 @@ export default function GuardianAccount() {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Create Account</Text>
       </TouchableOpacity>
-    </View>
-  )
+
+      <TouchableOpacity
+        onPress={() => router.push("/auth/signin")} // Adjust route as needed
+        style={styles.signupLink}
+      >
+        <Text style={styles.signupText}>
+          Don't have an account? <Text style={styles.link}>Sign In</Text>
+        </Text>
+      </TouchableOpacity>
+
+      <View style={{paddingBottom: 100}}></View>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: "center",
     backgroundColor: "#FFA500",
   },
   title: {
@@ -150,13 +159,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     fontFamily: "Nunito",
-    padding: 5,
-  },
-  inputError: {
-    borderBottomColor: "red",
+    padding: 10,
   },
   button: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     borderRadius: 99,
     paddingVertical: 15,
     alignItems: "center",
@@ -167,6 +173,17 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     fontFamily: "Nunito",
     fontSize: 16,
+  },signupLink: {
+    marginTop: 20,
+    alignItems: "center",
   },
-})
-
+  signupText: {
+    color: "#fff",
+    fontSize: 14,
+    fontFamily: "Nunito",
+  },
+  link: {
+    fontWeight: "900",
+    textDecorationLine: "underline",
+  },
+});

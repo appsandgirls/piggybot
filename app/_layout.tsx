@@ -12,7 +12,7 @@ export default function RootLayout() {
   })
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync() // Prevent auto-hide until fonts are loaded
+    SplashScreen.preventAutoHideAsync() 
   }, [])
 
   useEffect(() => {

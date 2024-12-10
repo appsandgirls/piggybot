@@ -10,6 +10,8 @@ export default function AuthLayout() {
     >
       <Stack.Screen name="guardianaccount" />
       <Stack.Screen name="profilesetup" />
+      <Stack.Screen name="signin" />
+
     </Stack>
   )
 }
